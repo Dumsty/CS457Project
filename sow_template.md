@@ -1,6 +1,6 @@
 # CS 457 Project Statement of Work (SOW) & Protocol Specification Template
 
-**Student Name:** [Your Full Name]  
+**Student Name:** Dustin Headington  
 **Date:** 2026-09-18  
 **Course:** CS 457 - Computer Networks  
 **Target Server Domain:** `server.headington.edu`  
