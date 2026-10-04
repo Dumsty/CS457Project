@@ -8,8 +8,8 @@
 stateDiagram-v2
     [*] --> INIT
     INIT --> WAITING_FOR_PLAYERS: Server Is Listening
-    WAITING_FOR_PLAYERS --> WAITING_FOR_PLAYERS: First CONNECT (Player 1 = X, Send LOBBY_WAIT)
-    WAITING_FOR_PLAYERS --> GAME_START: Second CONNECT (Player 2 = O)
+    WAITING_FOR_PLAYERS --> WAITING_FOR_PLAYERS: First CONNECT (Send LOBBY_WAIT)
+    WAITING_FOR_PLAYERS --> GAME_START: Second CONNECT
     GAME_START --> PLAYER_TURN: Pick Random First Turn
     PLAYER_TURN --> EVALUATE_MOVE: MOVE Received
     EVALUATE_MOVE --> PLAYER_TURN: Out-of-Turn or Invalid Move (Send ERROR)
