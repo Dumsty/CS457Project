@@ -1,0 +1,203 @@
+CS 457 Sprint 3 - Intermediate Gameplay Execution Log
+Dustin Headington - Tic-Tac-Toe - tested on localhost (127.0.0.1), port 8080
+
+Commands:
+  Terminal 1: python3 server.py -p 8080
+  Terminal 2: python3 client.py -i localhost -p 8080   (Alice)
+  Terminal 3: python3 client.py -i localhost -p 8080   (Bob)
+
+Shows: 2 simultaneous clients, FSM transitions, OUT_OF_TURN and INVALID_MOVE
+rejections, 5 turns of play, a diagonal win, and the final score summary.
+
+======================================================================
+TERMINAL 1 - server.py
+======================================================================
+10:53:06 Server listening on 0.0.0.0:8080
+10:53:06 [FSM] INIT -> WAITING_FOR_PLAYERS
+10:53:07 Connection from 127.0.0.1:34436
+10:53:07 'Alice' joined as Player_1 (X)
+10:53:07 Connection from 127.0.0.1:49626
+10:53:07 'Bob' joined as Player_2 (O)
+10:53:07 [FSM] WAITING_FOR_PLAYERS -> GAME_START
+10:53:07 First turn: Player_1
+10:53:07 [FSM] GAME_START -> PLAYER_TURN
+10:53:08 [FSM] PLAYER_TURN -> EVALUATE_MOVE
+10:53:08 ERROR OUT_OF_TURN -> client: It is Player_1's turn
+10:53:08 [FSM] EVALUATE_MOVE -> PLAYER_TURN
+10:53:08 [FSM] PLAYER_TURN -> EVALUATE_MOVE
+10:53:08 Player_1 (X) played (1, 1)
+10:53:08 [FSM] EVALUATE_MOVE -> CHECK_WIN_DRAW
+10:53:08 [FSM] CHECK_WIN_DRAW -> PLAYER_TURN
+10:53:09 [FSM] PLAYER_TURN -> EVALUATE_MOVE
+10:53:09 ERROR INVALID_MOVE -> client: Cell (1, 1) is already taken
+10:53:09 [FSM] EVALUATE_MOVE -> PLAYER_TURN
+10:53:09 [FSM] PLAYER_TURN -> EVALUATE_MOVE
+10:53:09 Player_2 (O) played (0, 0)
+10:53:09 [FSM] EVALUATE_MOVE -> CHECK_WIN_DRAW
+10:53:09 [FSM] CHECK_WIN_DRAW -> PLAYER_TURN
+10:53:09 [FSM] PLAYER_TURN -> EVALUATE_MOVE
+10:53:09 Player_1 (X) played (0, 2)
+10:53:09 [FSM] EVALUATE_MOVE -> CHECK_WIN_DRAW
+10:53:09 [FSM] CHECK_WIN_DRAW -> PLAYER_TURN
+10:53:10 [FSM] PLAYER_TURN -> EVALUATE_MOVE
+10:53:10 Player_2 (O) played (0, 1)
+10:53:10 [FSM] EVALUATE_MOVE -> CHECK_WIN_DRAW
+10:53:10 [FSM] CHECK_WIN_DRAW -> PLAYER_TURN
+10:53:10 [FSM] PLAYER_TURN -> EVALUATE_MOVE
+10:53:10 Player_1 (X) played (2, 0)
+10:53:10 [FSM] EVALUATE_MOVE -> CHECK_WIN_DRAW
+10:53:10 [FSM] CHECK_WIN_DRAW -> GAME_OVER
+10:53:10 Game over: WIN, winner=Player_1, scores={'Player_1': 1, 'Player_2': 0}
+10:53:10 [FSM] GAME_OVER -> CLEANUP
+10:53:10 [FSM] CLEANUP -> WAITING_FOR_PLAYERS
+10:53:10 Closed connection from 127.0.0.1:34436
+10:53:10 Closed connection from 127.0.0.1:49626
+
+======================================================================
+TERMINAL 2 - client.py (Alice)
+======================================================================
+Resolved localhost -> 127.0.0.1
+Enter your name: Alice
+Connected to localhost:8080
+[LOBBY] Waiting for Player_2 to join...
+
+========================================
+GAME START - you are Player_1 (X)
+You move first.
+========================================
+
+       0   1   2
+   0     |   |  
+      ---+---+---
+   1     |   |  
+      ---+---+---
+   2     |   |  
+
+>>> Your turn (X). Enter row and column, e.g. '1 2' (q to quit):
+1 1
+
+       0   1   2
+   0     |   |  
+      ---+---+---
+   1     | X |  
+      ---+---+---
+   2     |   |  
+
+... Waiting for Player_2 (O) to move...
+
+       0   1   2
+   0   O |   |  
+      ---+---+---
+   1     | X |  
+      ---+---+---
+   2     |   |  
+
+>>> Your turn (X). Enter row and column, e.g. '1 2' (q to quit):
+0 2
+
+       0   1   2
+   0   O |   | X
+      ---+---+---
+   1     | X |  
+      ---+---+---
+   2     |   |  
+
+... Waiting for Player_2 (O) to move...
+
+       0   1   2
+   0   O | O | X
+      ---+---+---
+   1     | X |  
+      ---+---+---
+   2     |   |  
+
+>>> Your turn (X). Enter row and column, e.g. '1 2' (q to quit):
+2 0
+
+       0   1   2
+   0   O | O | X
+      ---+---+---
+   1     | X |  
+      ---+---+---
+   2   X |   |  
+
+========================================
+GAME OVER - You win!
+Score: Player_1 (X, you): 1  |  Player_2 (O): 0
+========================================
+
+======================================================================
+TERMINAL 3 - client.py (Bob)
+======================================================================
+Resolved localhost -> 127.0.0.1
+Enter your name: Bob
+Connected to localhost:8080
+
+========================================
+GAME START - you are Player_2 (O)
+Player_1 (X) moves first.
+========================================
+
+       0   1   2
+   0     |   |  
+      ---+---+---
+   1     |   |  
+      ---+---+---
+   2     |   |  
+
+... Waiting for Player_1 (X) to move...
+2 2
+[ERROR] OUT_OF_TURN: It is Player_1's turn
+
+       0   1   2
+   0     |   |  
+      ---+---+---
+   1     | X |  
+      ---+---+---
+   2     |   |  
+
+>>> Your turn (O). Enter row and column, e.g. '1 2' (q to quit):
+1 1
+[ERROR] INVALID_MOVE: Cell (1, 1) is already taken
+>>> Your turn (O). Enter row and column, e.g. '1 2' (q to quit):
+0 0
+
+       0   1   2
+   0   O |   |  
+      ---+---+---
+   1     | X |  
+      ---+---+---
+   2     |   |  
+
+... Waiting for Player_1 (X) to move...
+
+       0   1   2
+   0   O |   | X
+      ---+---+---
+   1     | X |  
+      ---+---+---
+   2     |   |  
+
+>>> Your turn (O). Enter row and column, e.g. '1 2' (q to quit):
+0 1
+
+       0   1   2
+   0   O | O | X
+      ---+---+---
+   1     | X |  
+      ---+---+---
+   2     |   |  
+
+... Waiting for Player_1 (X) to move...
+
+       0   1   2
+   0   O | O | X
+      ---+---+---
+   1     | X |  
+      ---+---+---
+   2   X |   |  
+
+========================================
+GAME OVER - Player_1 (X) wins. Better luck next time.
+Score: Player_1 (X): 1  |  Player_2 (O, you): 0
+========================================
